@@ -81,6 +81,10 @@ public class HeartsGameState extends GameState {
         //toPlay = (int)(2*Math.random());
         toPlay = hasTwoOfClubs();
 
+        CardDeck defaultDeck=new CardDeck();
+        defaultDeck.add52();
+        defaultDeck.shuffle();
+
         // initialize the decks as follows:
         // - each player deck (#0 and #1) gets half the cards, randomly
         //   selected
@@ -95,14 +99,10 @@ public class HeartsGameState extends GameState {
         // move cards to opponent, until to piles have ~same size
         int counter = 0;
         int i=0;
-        do{
-            if(counter==13){
-                counter=0;
-                i++;
-            }
-            piles[toPlay].moveTopCardTo(piles[i]);
-            counter++;
-        }while(counter<=4);
+        for(i=0; i<defaultDeck.cards.size();i++){
+            piles[counter].add(defaultDeck.get(i));
+            if(i%14==0&&counter!=3){counter++;}
+        }
     }
 
     /**
@@ -195,8 +195,8 @@ public class HeartsGameState extends GameState {
      * index is 2
      */
     public CardDeck getDeck(int num) {
-        if (num < 0 || num > 3) return null;
-        return piles[num];
+        //if (num < 0 || num > 4) return null;
+        return piles[1];
     }
 
     /**

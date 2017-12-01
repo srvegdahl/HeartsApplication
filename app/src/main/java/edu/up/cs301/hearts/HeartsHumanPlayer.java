@@ -71,6 +71,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     int count=0;
     Canvas g=new Canvas();
+    Card AI1ToPlay;
 
 
     private  Card [] humanCards;
@@ -259,9 +260,11 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 
         CardDeck myDeck = state.getDeck(0);
+        CardDeck AI1Deck = state.getDeck(1);
 
         if (cardLocation==null&&cardLocationY==null&&humanCards==null) {
             c = state.getDeck(0).peekAtPlayerCard();// currently one of your own cards
+            AI1ToPlay = state.getDeck(1).peekAtPlayerCard();// currently one of your own cards
 
             cardLocation = new RectF[14];
             cardLocationY = new RectF[14];
@@ -322,37 +325,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
             drawCard(g, cardLocation[count], humanCards[count]);
         }
 
-        // draw the First AI's played card
-
-        float AI1rectLeft = 250;
-        float AI1rectRight = 400;
-        float AI1rectTop = 300;
-        float AI1rectBottom = 500;
-
-
-
-        RectF aI1cardPile = new RectF(AI1rectLeft, AI1rectTop, AI1rectRight, AI1rectBottom);
-        if (AI1HasPlayed)drawCard(g, aI1cardPile, c);
-        else drawCardBacks(g, aI1cardPile, 0, 0, 1);
-
-
-        //drawCard(g, aI1cardPile, c);
-
-
-        // draw the  second AI's played card
-        float AI2rectLeft = 1050;
-        float AI2rectRight = 1200;
-        float AI2rectTop = 300;
-        float AI2rectBottom = 500;
-
-
-        c = state.getDeck(0).peekAtPlayerCard();// currently one of your own cards
-
-        RectF aI2cardPile = new RectF(AI2rectLeft, AI2rectTop, AI2rectRight, AI2rectBottom);
-        if (AI2HasPlayed)drawCard(g, aI2cardPile, c);
-        else drawCardBacks(g, aI2cardPile, 0, 0, 1);
-
-
 
         //Draw the card the human played
 
@@ -369,6 +341,40 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         if (HumanHasPlayed)drawCard(g, HcardPile, c);
         else drawCardBacks(g, HcardPile, 0, 0, 1);
 
+
+        // draw the First AI's played card
+
+        float AI1rectLeft = 250;
+        float AI1rectRight = 400;
+        float AI1rectTop = 300;
+        float AI1rectBottom = 500;
+
+        AI1HasPlayed=true;
+        AI1ToPlay = state.getDeck(1).peekAtPlayerCard();// currently one of your own cards
+
+        RectF aI1cardPile = new RectF(AI1rectLeft, AI1rectTop, AI1rectRight, AI1rectBottom);
+        if (AI1HasPlayed==true)drawCard(g, aI1cardPile, AI1ToPlay);
+        else drawCardBacks(g, aI1cardPile, 0, 0, 1);
+
+
+        //drawCard(g, aI1cardPile, c);
+
+
+        // draw the  second AI's played card
+        float AI2rectLeft = 1050;
+        float AI2rectRight = 1200;
+        float AI2rectTop = 300;
+        float AI2rectBottom = 500;
+
+
+        c = state.getDeck(2).peekAtPlayerCard();// currently one of your own cards
+
+        RectF aI2cardPile = new RectF(AI2rectLeft, AI2rectTop, AI2rectRight, AI2rectBottom);
+        if (AI2HasPlayed)drawCard(g, aI2cardPile, c);
+        else drawCardBacks(g, aI2cardPile, 0, 0, 1);
+
+
+
         // draw the third AI's played card
 
         float AI3rectLeft = 650;
@@ -377,7 +383,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         float AI3rectBottom = 300;
 
 
-        c = state.getDeck(0).peekAtPlayerCard();// currently one of your own cards
+        c = state.getDeck(3).peekAtPlayerCard();// currently one of your own cards
 
         RectF aI3cardPile = new RectF(AI3rectLeft, AI3rectTop, AI3rectRight, AI3rectBottom);
         if (AI3HasPlayed)drawCard(g, aI3cardPile, c);
