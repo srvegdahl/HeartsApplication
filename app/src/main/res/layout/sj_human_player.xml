@@ -22,7 +22,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+
+    </LinearLayout>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -36,10 +38,56 @@
 
     <ImageButton
         android:id="@+id/imageButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="13dp"
         android:layout_toEndOf="@+id/space"
-        app:srcCompat="@android:drawable/ic_dialog_info" />
+        android:src="@android:drawable/ic_dialog_info" />
+
+    <TextView
+        android:id="@+id/HumanScore"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/imageButton"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@+id/imageButton"
+        android:text="Your score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/AI1Score"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/HumanScore"
+        android:layout_alignBottom="@+id/HumanScore"
+        android:layout_toEndOf="@+id/HumanScore"
+        android:text="AI 1 score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/AI2Score"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/AI1Score"
+        android:layout_alignBottom="@+id/AI1Score"
+        android:layout_toStartOf="@+id/AI3Score"
+        android:text="AI 2 score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/AI3Score"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/AI2Score"
+        android:layout_alignBottom="@+id/AI2Score"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="74dp"
+        android:text="AI 3 score: "
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 
 </RelativeLayout>

@@ -45,8 +45,8 @@ public class HeartsLocalGame extends LocalGame {
         }
         // if not, check if they have a card of that suit,
         else{
-            for (int i = 0; i < currentGame.piles[currentGame.toPlay].size(); i++) {
-                Card c = currentGame.piles[currentGame.toPlay].cardAt(i);
+            for (int i = 0; i < currentGame.piles[currentGame.CurrentPlayerIndex].size(); i++) {
+                Card c = currentGame.piles[currentGame.CurrentPlayerIndex].cardAt(i);
                if(c.getSuit().equals(currentGame.table.cardsPlayed[0].getSuit())){
                    valid = false;
                }
@@ -62,7 +62,7 @@ public class HeartsLocalGame extends LocalGame {
      */
     public boolean validTurn(GamePlayer player){
         int idx = this.getPlayerIdx(player);
-        if(idx == currentGame.toPlay) {
+        if(idx == currentGame.CurrentPlayerIndex) {
             return true;
         }
         else{
@@ -74,7 +74,7 @@ public class HeartsLocalGame extends LocalGame {
 //     * checks who's turn it is to play a card
 //     */
 //    public GamePlayer checkTurn(){
-//        return currentGame.players[currentGame.toPlay];
+//        return currentGame.players[currentGame.CurrentPlayerIndex];
 //    }
 
     /**
@@ -98,7 +98,7 @@ public class HeartsLocalGame extends LocalGame {
         Card winningCard = new Card(highestFace,suit);
         for (int i = 0; i < players.length; i++) {
             if (currentGame.piles[i].containsCard(winningCard)) {
-                currentGame.toPlay = i;
+                currentGame.CurrentPlayerIndex = i;
             }
         }
 //        for(GamePlayer p: currentGame.players){

@@ -29,6 +29,8 @@ import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 public class EasyAI extends GameComputerPlayer implements Animator {
 
     //variables
+    protected HeartsGameState state;
+    //int ImportantIndex = state.getCurrentPlayerIndex();
     CardDeck currentHand;
     Table table = new Table();
     Suit baseSuit = table.getSuitIndex();
@@ -42,14 +44,12 @@ public class EasyAI extends GameComputerPlayer implements Animator {
     int score = 0;
     String name;
     // our game state
-    protected HeartsGameState state;
 
     // our activity
     private Activity myActivity;
 
     // the amination surface
     private AnimationSurface surface;
-
 
     public EasyAI(String playerName) {
         super(playerName);
@@ -99,7 +99,7 @@ public class EasyAI extends GameComputerPlayer implements Animator {
 
         int ind = state.CurrentPlayerIndex;
         //I need the current player so I can call their hand!!!!!!
-        currentHand = new CardDeck(state.piles[ind]);
+        currentHand = state.piles[ind];
     }
 
     public void strategy() {
@@ -234,7 +234,7 @@ public class EasyAI extends GameComputerPlayer implements Animator {
 
     /**
      * @return
-     * 		the amimation interval, in milliseconds
+     *        the amimation interval, in milliseconds
      */
     public int interval() {
         // 1/20 of a second
@@ -243,7 +243,7 @@ public class EasyAI extends GameComputerPlayer implements Animator {
 
     /**
      * @return
-     * 		the background color
+     *        the background color
      */
     public int backgroundColor() {
         return Color.GREEN;
@@ -251,7 +251,7 @@ public class EasyAI extends GameComputerPlayer implements Animator {
 
     /**
      * @return
-     * 		whether the animation should be paused
+     *        whether the animation should be paused
      */
     public boolean doPause() {
         return false;
@@ -259,7 +259,7 @@ public class EasyAI extends GameComputerPlayer implements Animator {
 
     /**
      * @return
-     * 		whether the animation should be terminated
+     *        whether the animation should be terminated
      */
     public boolean doQuit() {
         return false;
@@ -286,7 +286,11 @@ public class EasyAI extends GameComputerPlayer implements Animator {
     public void tick(Canvas g) {
         // ignore if we have not yet received the game state
         if (state == null) return;
-        //getCanvas(g);
+
+        //if it is the AI's turn
+        if(state.CurrentPlayer.equals(this)){
+            Card goldenTicket = new Card(playCard());
+        }
     }
 
     public void onTouch(MotionEvent me){

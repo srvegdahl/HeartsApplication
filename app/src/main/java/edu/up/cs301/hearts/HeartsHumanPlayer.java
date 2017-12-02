@@ -120,7 +120,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * constructor
      *
      * @param name
-     * 		the player's name
+     *        the player's name
      */
     public HeartsHumanPlayer(String name){
         super(name);
@@ -136,7 +136,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * callback method: we have received a message from the game
      *
      * @param info
-     * 		the message we have received from the game
+     *        the message we have received from the game
      */
     @Override
     public void receiveInfo(GameInfo info) {
@@ -163,7 +163,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * of the game, or when the screen orientation changes).
      *
      * @param activity
-     * 		the current activity
+     *        the current activity
      */
     public void setAsGui(GameMainActivity activity) {
 
@@ -198,7 +198,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		the amimation interval, in milliseconds
+     *        the amimation interval, in milliseconds
      */
     public int interval() {
         // 1/20 of a second
@@ -207,7 +207,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		the background color
+     *        the background color
      */
     public int backgroundColor() {
         return Color.GREEN;
@@ -215,7 +215,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		whether the animation should be paused
+     *        whether the animation should be paused
      */
     public boolean doPause() {
         return false;
@@ -223,7 +223,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		whether the animation should be terminated
+     *        whether the animation should be terminated
      */
     public boolean doQuit() {
         return false;
@@ -250,7 +250,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * - a red bar to indicate whose turn it is
      *
      * @param g
-     * 		the canvas on which we are to draw
+     *        the canvas on which we are to draw
      */
 
     public void tick(Canvas g) {
@@ -265,6 +265,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         if (cardLocation==null&&cardLocationY==null&&humanCards==null) {
             c = state.getDeck(0).peekAtPlayerCard();// currently one of your own cards
             AI1ToPlay = state.getDeck(1).peekAtPlayerCard();// currently one of your own cards
+            Card AI2ToPlay = state.getDeck(2).peekAtPlayerCard();// currently one of your own cards
+            Card AI3ToPlay = state.getDeck(3).peekAtPlayerCard();// currently one of your own cards
 
             cardLocation = new RectF[14];
             cardLocationY = new RectF[14];
@@ -349,11 +351,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         float AI1rectTop = 300;
         float AI1rectBottom = 500;
 
+        EasyAI AIofTheEasyKind= new EasyAI("AI1");// this is naughty, we need to properly declare the Easy AI
         AI1HasPlayed=true;
         AI1ToPlay = state.getDeck(1).peekAtPlayerCard();// currently one of your own cards
 
         RectF aI1cardPile = new RectF(AI1rectLeft, AI1rectTop, AI1rectRight, AI1rectBottom);
-        if (AI1HasPlayed==true)drawCard(g, aI1cardPile, AI1ToPlay);
+        if (AI1HasPlayed==true)drawCard(g, aI1cardPile, AIofTheEasyKind.playCard());//AI1ToPlay);
         else drawCardBacks(g, aI1cardPile, 0, 0, 1);
 
 
@@ -366,6 +369,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         float AI2rectTop = 300;
         float AI2rectBottom = 500;
 
+        AI2HasPlayed=true;
 
         c = state.getDeck(2).peekAtPlayerCard();// currently one of your own cards
 
@@ -382,6 +386,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         float AI3rectTop = 100;
         float AI3rectBottom = 300;
 
+
+        AI3HasPlayed=true;
 
         c = state.getDeck(3).peekAtPlayerCard();// currently one of your own cards
 
@@ -436,10 +442,10 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
             }
         }
 /*
-		reset();
-		if (drawMe==true){
-			g.drawRect(cardLocationY[count], p);
-		}
+      reset();
+      if (drawMe==true){
+         g.drawRect(cardLocationY[count], p);
+      }
 */
     }
 
@@ -447,9 +453,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		the rectangle that represents the location on the drawing
-     * 		surface where the top card in the opponent's deck is to
-     * 		be drawn
+     *        the rectangle that represents the location on the drawing
+     *        surface where the top card in the opponent's deck is to
+     *        be drawn
      */
     private RectF opponentTopCardLocation() {
         // near the left-bottom of the drawing surface, based on the height
@@ -464,9 +470,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		the rectangle that represents the location on the drawing
-     * 		surface where the top card in the current player's deck is to
-     * 		be drawn
+     *        the rectangle that represents the location on the drawing
+     *        surface where the top card in the current player's deck is to
+     *        be drawn
      */
     private RectF thisPlayerTopCardLocation() {
         // near the right-bottom of the drawing surface, based on the height
@@ -481,9 +487,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     /**
      * @return
-     * 		the rectangle that represents the location on the drawing
-     * 		surface where the top card in the middle pile is to
-     * 		be drawn
+     *        the rectangle that represents the location on the drawing
+     *        surface where the top card in the middle pile is to
+     *        be drawn
      */
     private RectF middlePileTopCardLocation() {
         // near the middle-bottom of the drawing surface, based on the height
@@ -502,16 +508,16 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * seen to some extent
      *
      * @param g
-     * 		the canvas to draw on
+     *        the canvas to draw on
      * @param topRect
-     * 		the rectangle that defines the location of the top card (and the size of all
-     * 		the cards
+     *        the rectangle that defines the location of the top card (and the size of all
+     *        the cards
      * @param deltaX
-     * 		the horizontal change between the drawing position of two consecutive cards
+     *        the horizontal change between the drawing position of two consecutive cards
      * @param deltaY
-     * 		the vertical change between the drawing position of two consecutive cards
+     *        the vertical change between the drawing position of two consecutive cards
      * @param numCards
-     * 		the number of card-backs to draw
+     *        the number of card-backs to draw
      */
     private void drawCardBacks(Canvas g, RectF topRect, float deltaX, float deltaY,
                                int numCards) {
@@ -531,7 +537,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * callback method: we have received a touch on the animation surface
      *
      * @param event
-     * 		the motion-event
+     *        the motion-event
      */
     public void onTouch(MotionEvent event) {
         boolean dontFlash= false;
@@ -598,11 +604,11 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * draws a card on the canvas; if the card is null, draw a card-back
      *
      * @param g
-     * 		the canvas object
+     *        the canvas object
      * @param rect
-     * 		a rectangle defining the location to draw the card
+     *        a rectangle defining the location to draw the card
      * @param c
-     * 		the card to draw; if null, a card-back is drawn
+     *        the card to draw; if null, a card-back is drawn
      */
     private static void drawCard(Canvas g, RectF rect, edu.up.cs301.card.Card c) {
         if (c == null) {
@@ -632,11 +638,11 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      * scales a rectangle, moving all edges with respect to its center
      *
      * @param rect
-     * 		the original rectangle
+     *        the original rectangle
      * @param factor
-     * 		the scaling factor
+     *        the scaling factor
      * @return
-     * 		the scaled rectangle
+     *        the scaled rectangle
      */
     private static RectF scaledBy(RectF rect, float factor) {
         // compute the edge locations of the original rectangle, but with

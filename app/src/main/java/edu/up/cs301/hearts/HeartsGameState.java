@@ -1,32 +1,21 @@
 package edu.up.cs301.hearts;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Rank;
 import edu.up.cs301.card.Suit;
-import edu.up.cs301.game.Game;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.infoMsg.GameState;
 
-/**
- * Created by emmasoriano on 10/23/17.
- */
-
-//package edu.up.cs301.slapjack;
-
-import edu.up.cs301.card.Card;
-import edu.up.cs301.game.infoMsg.GameState;
 
 /**
- * Contains the state of a Slapjack game.  Sent by the game when
+ * Contains the state of a Hearts game.  Sent by the game when
  * a player wants to enquire about the state of the game.  (E.g., to display
  * it, or to help figure out its next move.)
  *
  * @author Steven R. Vegdahl
- * @version July 2013
+ * @contributor Emma Soriano, Chris Lytle
+ * @version October 2017
  */
 public class HeartsGameState extends GameState {
 
@@ -45,9 +34,8 @@ public class HeartsGameState extends GameState {
 
     public GamePlayer[] players = new GamePlayer[4];
     public Table table;
-    private int[] Scores = new int[4];
     public boolean GameOver = false;
-    public int Trick = 0;
+
 
     public GamePlayer CurrentPlayer;
     public int CurrentPlayerIndex;
@@ -64,45 +52,38 @@ public class HeartsGameState extends GameState {
     //  - 1: pile for player 1
     //  - 2: pile for player 2
     //  - 3: pile for player 3
-    //  - 4: the "up" pile, where the top card
-    // Note that when players receive the state, all but the top card in all piles
-    // are passed as null.
     public CardDeck[] piles;
 
-    // whose turn is it to turn a card?
-    public int toPlay;
+//TODO create scoring method and keep track/update trick
+    private int[] Scores = new int[4];
+    public int Trick = 0;
+
 
     /**
      * Constructor for objects of class HeartsGameState. Initializes for the beginning of the
      * game, with a random player as the first to turn card
      */
     public HeartsGameState() {
-        // randomly pick the player who starts
-        //toPlay = (int)(2*Math.random());
-        toPlay = hasTwoOfClubs();
-
         CardDeck defaultDeck=new CardDeck();
         defaultDeck.add52();
         defaultDeck.shuffle();
 
         // initialize the decks as follows:
-        // - each player deck (#0 and #1) gets half the cards, randomly
-        //   selected
-        // - the middle deck (#2) is empty
         piles = new CardDeck[4];
         piles[0] = new CardDeck(); // create empty deck
         piles[1] = new CardDeck(); // create empty deck
         piles[2] = new CardDeck(); // create empty deck
         piles[3] = new CardDeck(); // create empty deck
-        piles[toPlay].add52(); // give all cards to player whose turn it is, in order
-        piles[toPlay].shuffle(); // shuffle the cards
-        // move cards to opponent, until to piles have ~same size
+
         int counter = 0;
-        int i=0;
-        for(i=0; i<defaultDeck.cards.size();i++){
+        for(int i=0; i<defaultDeck.cards.size();i++){
             piles[counter].add(defaultDeck.get(i));
             if(i%14==0&&counter!=3){counter++;}
         }
+
+        //initialize CurrentPlayerIndex
+        hasTwoOfClubs();
+
     }
 
     /**
@@ -112,7 +93,7 @@ public class HeartsGameState extends GameState {
      */
     public HeartsGameState(HeartsGameState orig) {
         // set index of player whose turn it is
-        toPlay = orig.toPlay;
+        CurrentPlayerIndex = orig.CurrentPlayerIndex;
         // create new deck array, making copy of each deck
         piles = new CardDeck[4];
         piles[0] = new CardDeck(orig.piles[0]);
@@ -129,6 +110,7 @@ public class HeartsGameState extends GameState {
      *  - 1 : HardAI
      */
     public void setDifficulty(int difficulty){
+        //TODO fix main menu so that it asks user to select difficulty level
         if((difficulty == 0)||(difficulty == 1)){
             this.Difficulty = difficulty;
         }
@@ -136,6 +118,7 @@ public class HeartsGameState extends GameState {
             return;
         }
     }
+
 
     /**
      * Set Current Player
@@ -145,7 +128,6 @@ public class HeartsGameState extends GameState {
         if((index >= 0)&&(index <= 3)){
             CurrentPlayer = players[index];
             CurrentPlayerIndex = index;
-
         }
     }
 
@@ -195,8 +177,8 @@ public class HeartsGameState extends GameState {
      * index is 2
      */
     public CardDeck getDeck(int num) {
-        //if (num < 0 || num > 4) return null;
-        return piles[1];
+        if (num < 0 || num >= 4) return null;
+        return piles[num];
     }
 
     /**
@@ -204,155 +186,33 @@ public class HeartsGameState extends GameState {
      *09
      * @return the index (0 or 1) of the player whose turn it is.
      */
-    public int toPlay() {
-        return toPlay;
+    public int getCurrentPlayerIndex() {
+        return CurrentPlayerIndex;
     }
 
     /**
      *
      * @return
      */
-    public int hasTwoOfClubs(){
+    public void hasTwoOfClubs(){
         Card twoClubs = new Card(Rank.TWO, Suit.Club);
         int num = 0;
         for(int i = 0; i<players.length;i++){
-            //if(players[i].checkIfCardInHand(twoClubs)){
-                //num= i;
-            //}
-        }
-        return num;
-    }
-
-
-    /**
-     * change whose move it is
-     *
-     * @param idx the index of the player whose move it now is
-     */
-    public void setToPlay(int idx) {
-        toPlay = idx;
-    }
-
-
-}
-
-    /**
-     * Replaces all cards with null, except for the top card of deck 2
-     */
-
-
-/*
-public class HeartsGameState extends GameState {
-
-    // Declare Instance Variables
-    public String userName;
-    public GamePlayer[] players = new GamePlayer[4];
-    public GamePlayer currentPlayer;
-    public GamePlayer nextPlayer;
-    public CardDeck deck;
-    public int playerIndex;
-    public int difficulty;
-    public int[] currentScores;
-    public int currentSuit;
-    public int round;
-    Table table;
-
-
-    /**
-     * HeartsGameState Constructor
-     * @param d
-     * @param user
-     */
-/*
-    public HeartsGameState(int d, String user){
-        //initialize variables
-        difficulty = d;
-        userName = user;
-        setPlayers();
-        setCurrentPlayer(players[0]);
-        playerIndex = 0;
-        currentScores[0] = 0;
-        currentScores[1] = 0;
-        currentScores[2] = 0;
-        currentScores[3] = 0;
-        currentSuit = 1;
-        round = 0;
-        table = new Table();
-        //create a deck of cards
-        deck = new CardDeck();
-
-
-    }
-
-
-    /**
-     * Sets players to
-     */
-/*
-    public void setPlayers(){
-        int i;
-        players[0] = new HeartsHumanPlayer(userName);
-        for(i = 1; i <= 3; i++){
-            if(difficulty == 0){
-                EasyAIxxx newAI = new EasyAIxxx("Easy AI " + i);
-                players[i] = newAI;
-            }
-            else{
-                HardAI newAI = new HardAI("Hard AI " + i);
-                players[i] = newAI;
+            if(piles[i].equals(twoClubs)){
+                num= i;
+                setCurrentPlayer(i);
             }
         }
     }
 
 
-    /**
-     * deals the players hands
-     */
-/*
-    public void dealHands(){
-        CardDeck[] hand = new CardDeck[4];
-        int counter=0;
-        deck.shuffle();
-        CardDeck copyDeck = deck;
-        for(int i= 0; i<deck.size();i++){
-            if(i%13==0 && i!=0){
-                counter++;
+    public int getPlayerIndex(GamePlayer p){
+        for(int i =0; i<players.length; i++){
+            if(players[i].equals(p)){
+                return i;
             }
-            copyDeck.moveTopCardTo(hand[counter]);
         }
-
-        for(int j = 0; j<players.length; j++){
-            players[j].setHand(hand[j]);
-        }
-
-    }
-//determine who starts
-    /**
-     * set a given player for who's turn it is
-     * @param player
-     */
-
-/*
-
-    /**
-     * set given player's score
-     * @param player
-     * @param addScore
-     */
-   /*
-    public void setPlayersScore(GamePlayer player, int addScore){
-        //setScore(addScore);
-    }
-
-
-    /**
-     * get round number
-     * @return
-     */
-   /*
-    public int getRound(){
-        return round;
+        return -1;
     }
 
 }
-*/

@@ -23,6 +23,7 @@ public class Table {
     }
 
     public void addCard(Card card, GamePlayer GP){
+        //TODO make this correspond to player specific placement on table
         for(int i=0; i<4; i++){
             if(cardsPlayed[i] == null){
                 cardsPlayed[i]=card;
