@@ -225,11 +225,8 @@ public class CardDeck implements Serializable {
     }
 
     public Card peekAtPlayerCard() {
-        //System.out.println("in peekCard ");
         synchronized (this.cards) {
-            //System.out.println("in synchronized card ");
             if (cards.isEmpty()) {
-                //System.out.println("deck is empty");
                 return null;
             }
 
@@ -239,8 +236,8 @@ public class CardDeck implements Serializable {
                 for (int i = 0; i <= cards.size(); i++) {
                     //System.out.println("card size:   " + cards.size());
                     //System.out.println("curr card value:  " + cards.get(currCard));
-                    if (i<0) currCard=0;
-                    else if(i==0||i==1) currCard=0;
+
+                    if(i==0||i==1) currCard=0;
                     else {
                         Card curr = cards.get(i);
                         currCard++;

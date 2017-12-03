@@ -128,8 +128,8 @@ public class EasyAI extends GameComputerPlayer implements Animator {
         //Remember, there are three different AI's, so there are three different decks to keep track of
         Random rand = new Random();
         //x is rank, y is suit
-        int x = rand.nextInt(14 - 0) + 0;
-        int y = rand.nextInt(5 - 0 + 0);
+        int x = rand.nextInt(12);
+        int y = rand.nextInt(3);
 
         if(baseSuit==null){
             chosenCard = new Card(ranks[x],suits[y]);
@@ -266,6 +266,9 @@ public class EasyAI extends GameComputerPlayer implements Animator {
     }
 
     public boolean checkIfCardinHand(Card card){
+        if(card == null){
+            return false;
+        }
         for(Card c: currentHand.cards){
             if(c.equals(card)){
                 return true;

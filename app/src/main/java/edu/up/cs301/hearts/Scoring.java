@@ -3,6 +3,7 @@ package edu.up.cs301.hearts;
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Rank;
 import edu.up.cs301.card.Suit;
+import edu.up.cs301.game.GamePlayer;
 
 /**
  * This class calculates points earned by players and updates their current scores
@@ -33,28 +34,27 @@ public class Scoring {
     }
 
 
-    public void updateScores(HeartsPlayer p1, HeartsPlayer p2, HeartsPlayer p3, HeartsPlayer p4){
+    public void updateScores(GamePlayer p1, GamePlayer p2, GamePlayer p3, GamePlayer p4){
         //gets the player who won the round and adds the points won from the round to their score
-        if(p1.isWinner == true){
-            p1.score = p1.score + score;
-            p1.isWinner = false;
-        }
-        else if(p2.isWinner == true){
-            p2.score = p2.score + score;
-            p2.isWinner = false;
-        }
-        else if(p3.isWinner == true){
-            p3.score = p3.score + score;
-            p3.isWinner = false;
-        }
-        else if(p4.isWinner == true){
-            p4.score = p4.score + score;
-            p4.isWinner = false;
-        }
+//        if(p1.isWinner == true){
+//            p1.score = p1.score + score;
+//            p1.isWinner = false;
+//        }
+//        else if(p2.isWinner == true){
+//            p2.score = p2.score + score;
+//            p2.isWinner = false;
+//        }
+//        else if(p3.isWinner == true){
+//            p3.score = p3.score + score;
+//            p3.isWinner = false;
+//        }
+//        else if(p4.isWinner == true){
+//            p4.score = p4.score + score;
+//            p4.isWinner = false;
+//        }
 
+        //update GUI with scores
 
-        //if advanced update GUI with scores
-        //else keep GUI same
     }
 
 

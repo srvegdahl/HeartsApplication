@@ -8,27 +8,17 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import edu.up.cs301.animation.AnimationSurface;
 import edu.up.cs301.animation.Animator;
 import edu.up.cs301.card.*;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
-import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
 import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
-import edu.up.cs301.slapjack.Deck;
-import edu.up.cs301.slapjack.SJPlayAction;
-import edu.up.cs301.slapjack.SJSlapAction;
-import edu.up.cs301.slapjack.SJState;
-
-import static edu.up.cs301.game.R.drawable.card_2c;
 
 /**
  * Created by emmasoriano on 11/6/17.
@@ -44,47 +34,37 @@ import static edu.up.cs301.game.R.drawable.card_2c;
  */
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
-
-
-    private  boolean [] cardLocationBool;
-
-    boolean drawMe=false;
-    boolean doubleTap=false;
-    Card cardToPlay;
-    boolean singleTap=false;
-    String currentPlayer="empty";
+    int playerIndex;
     boolean AI1HasPlayed= false;
     boolean AI2HasPlayed= false;
     boolean AI3HasPlayed= false;
     boolean HumanHasPlayed= false;
 
-    //instance variables added from HeartsPlayer class
-    CardDeck hand;
-    Card[] collection;
-    Card[] myPass = new Card[2];
-    boolean myTurn = false;
-
     boolean isWinner = false;
-    boolean hasTwoOfClubs = false;
-    int score = 0;
     String name;
 
+//GUI variables
     int count=0;
-    Canvas g=new Canvas();
-    Card AI1ToPlay;
-
-
-    private  Card [] humanCards;
-
+    Canvas g = new Canvas();
+    private  boolean [] cardLocationBool;
+    boolean drawMe=false;
+    boolean doubleTap=false;
+    Card cardToPlay;
+    boolean singleTap=false;
     private  RectF [] cardLocationY;
+    private  RectF [] cardLocationX;
 
     private Card c;
+    Card AI1ToPlay;
+    Card AI2ToPlay;
+    Card AI3ToPlay;
     private Card selectedCard;
+    private  Card [] humanCards;
 
 
-    private  RectF [] cardLocation;
-
+    //TODO what are thoseee
     TextView turnId;
+    String currentPlayer="empty";
 
     // sizes and locations of card decks and cards, expressed as percentages
     // of the screen height and width
@@ -107,15 +87,18 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
     private int backgroundColor;
 
     public boolean checkIfCardinHand(Card card){
-        if((card != null)&&(hand != null)){
-            for(Card c: hand.cards){
-                if(c.equals(card)){
-                    return true;
-                }
+        if(card == null){
+            return false;
+        }
+        for(Card c: humanCards){
+            if(c.equals(card)){
+                return true;
             }
         }
         return false;
     }
+
+
     /**
      * constructor
      *
@@ -124,12 +107,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
      */
     public HeartsHumanPlayer(String name){
         super(name);
-
-        //determines if player has the starting card
-        Card twoOfClubs = new Card(Rank.TWO, Suit.Club);
-        if (checkIfCardinHand(twoOfClubs)){
-            hasTwoOfClubs= true;
-        }
     }
 
     /**
@@ -171,7 +148,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         myActivity = activity;
 
         // Load the layout resource for the new configuration
-        activity.setContentView(R.layout.sj_human_player);// change to hearts
+        activity.setContentView(R.layout.sj_human_player);// TODO change to hearts
 
         // link the animator (this object) to the animation surface
         surface = (AnimationSurface) myActivity
@@ -184,7 +161,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         // if the state is not null, simulate having just received the state so that
         // any state-related processing is done
         if (state != null) {receiveInfo(state);}
-
     }
 
     /**
@@ -232,12 +208,11 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
     public void addCards(RectF midTopLocation){
 
-
         for (int n=0; n<=13; n++) {
 
-            if (cardLocation[n].contains(midTopLocation)) {
+            if (cardLocationX[n].contains(midTopLocation)) {
 
-                cardLocation[n] = midTopLocation;
+                cardLocationX[n] = midTopLocation;
                 //System.out.println("added mid top loc to array  " + midTopLocation);
             }
         }
@@ -258,17 +233,23 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         // ignore if we have not yet received the game state
         if (state == null) return;
 
+        //TODO  get player's index
+        //playerIndex = state.getPlayerIndex(this);
 
-        CardDeck myDeck = state.getDeck(0);
-        CardDeck AI1Deck = state.getDeck(1);
 
-        if (cardLocation==null&&cardLocationY==null&&humanCards==null) {
+        CardDeck myDeck = state.piles[playerNum];//state.getDeck(0);
+        CardDeck AI1Deck = state.piles[1];//getDeck(1);
+        CardDeck AI2Deck = state.piles[2];
+        CardDeck AI3Deck = state.piles[3];
+
+
+        if (cardLocationX ==null&&cardLocationY==null&&humanCards==null) {
             c = state.getDeck(0).peekAtPlayerCard();// currently one of your own cards
-            AI1ToPlay = state.getDeck(1).peekAtPlayerCard();// currently one of your own cards
-            Card AI2ToPlay = state.getDeck(2).peekAtPlayerCard();// currently one of your own cards
-            Card AI3ToPlay = state.getDeck(3).peekAtPlayerCard();// currently one of your own cards
+            AI1ToPlay = state.getDeck(1).peekAtPlayerCard();// one of AI1's cards
+            AI2ToPlay = state.getDeck(2).peekAtPlayerCard();// currently one of AI2's cards
+            AI3ToPlay = state.getDeck(3).peekAtPlayerCard();// currently one of AI3's cards
 
-            cardLocation = new RectF[14];
+            cardLocationX = new RectF[14];
             cardLocationY = new RectF[14];
             humanCards=new Card[14];
             cardLocationBool = new boolean[14];
@@ -285,7 +266,10 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
             for (int row = 1; row < 8; row++) {
                 for (int col = 1; col < 3; col++) {
-                    humanCards[count]=myDeck.get(count);
+                    if(count < myDeck.size()){
+                        humanCards[count] = myDeck.get(count);
+                    }
+
                     float rectRight = 210;
                     float rectTop = 1000;
                     float rectBottom = 1300;
@@ -296,7 +280,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
                     rectTop = rectTop + ((col - 1) * 325);
                     rectBottom = rectBottom + ((col - 1) * 325);
 
-                    cardLocation[count] = new RectF(rectLeft, rectTop, rectRight, rectBottom);
+                    cardLocationX[count] = new RectF(rectLeft, rectTop, rectRight, rectBottom);
 
                     float rectRightY = 230;
                     float rectTopY = 990;
@@ -319,12 +303,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         Paint p = new Paint();
         p.setColor(Color.YELLOW);
 
-        if ((count==cardLocation.length)) {
+        if ((count== cardLocationX.length)) {
             //g.drawRect(cardLocationY[count - 1], p);
         }else{
             g.drawRect(cardLocationY[count], p);
-            //drawCard(g, cardLocation[count], selectedCard);
-            drawCard(g, cardLocation[count], humanCards[count]);
+            //drawCard(g, cardLocationX[count], selectedCard);
+            drawCard(g, cardLocationX[count], humanCards[count]);
         }
 
 
@@ -399,7 +383,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
         for(int i=0; i<Math.min(13,myDeck.size());i++) {
             //Log.i(" drawing card ",""+i);
-            drawCard(g, cardLocation[i],humanCards[i] );//myDeck.get(i));
+            drawCard(g, cardLocationX[i],humanCards[i] );//myDeck.get(i));
 
 
             //drawCardBacks(g,checkCardRect,checkCardRect,checkCardRect,3);
@@ -432,7 +416,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
             p = new Paint();
             p.setColor(Color.GREEN);
             g.drawRect(cardLocationY[12], p);
-            drawCard(g, cardLocation[12],humanCards[12] );
+            drawCard(g, cardLocationX[12],humanCards[12] );
         }
         for(int i=0; i<Math.min(13,myDeck.size());i++) {
             if (cardLocationBool[i] == true) {
@@ -552,9 +536,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         // the player's pile or the middle pile
         RectF myTopCardLoc = thisPlayerTopCardLocation();
         RectF middleTopCardLoc = middlePileTopCardLocation();
-        if(cardLocation != null){
+        if(cardLocationX != null){
             for (int n=0; n<=13; n++) {
-                if (cardLocation[n].contains(x, y)) {
+                if (cardLocationX[n].contains(x, y)) {
                     dontFlash=true;
                     selectedCard=humanCards[n];
                     if (singleTap==false){
@@ -579,8 +563,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
                     cardToPlay=humanCards[n];
 
 
-                    //System.out.println("I've been touched!   " + cardLocation[n]);
-                    RectF touched = cardLocation[n];
+                    //System.out.println("I've been touched!   " + cardLocationX[n]);
+                    RectF touched = cardLocationX[n];
                     count =n;
                     //highlightCard(touched, count);
 
@@ -663,89 +647,5 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
         // create/return the new rectangle
         return new RectF(left, top, right, bottom);
     }
-
-
-
-//Added methods from HeartsPlayer class
-
-    public Card[] getMyPass(){
-        return myPass;
-    }
-
-
-    public Card[] getHand(){
-        return (Card[]) hand.cards.toArray();
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public int getScore(){
-        return score;
-    }
-
-    public boolean isMyTurn(){
-        return myTurn;
-    }
-
-    public void setMyPass(Card[] cards){
-        myPass = cards;
-    }
-    public void setIsWinner(boolean initWinner){
-        isWinner= initWinner;
-    }
-
-    /**
-     * Set hand to given list of cards
-     * @param initHand - shouldn't be more then
-     */
-    public void setHand(CardDeck initHand){
-        int i;
-        for (Card c: initHand.cards){
-            hand.cards.add(c);
-        }
-        collection= (Card[]) hand.cards.toArray();
-    }
-
-    public void setName(String initName){
-        name = initName;
-    }
-
-    public void setScore(int initScore){
-        score = score + initScore;
-    }
-
-    public void setMyTurn(boolean initMyTurn){
-        myTurn = initMyTurn;
-    }
-
-    public void threeCardPass(CardDeck pass, GamePlayer p) {
-        //pass cards to appropriate player
-        for (Card c : pass.cards) {
-            p.hand.cards.add(c);
-        }
-
-        //remove cards passed to another player from hand
-        for (Card c : hand.cards) {
-            for (Card i : pass.cards) {
-                if (c.equals(i)) {
-                    hand.cards.remove(i);
-                }
-            }
-        }
-    }
-
-    public boolean checkIfCardInHand(Card card){
-        for(Card c: hand.cards){
-            if(c.equals(card)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
 
 }
